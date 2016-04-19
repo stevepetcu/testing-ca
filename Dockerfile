@@ -9,38 +9,41 @@ RUN apt-get update \
         mariadb-client-core-10.0 \
         nodejs \
         rsyslog \
+        softhsm \
 
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 EXPOSE 4000
 
-RUN go get github.com/jsha/listenbuddy
-RUN go get bitbucket.org/liamstask/goose/cmd/goose
-RUN go get -v github.com/golang/lint/golint
+RUN go get -v \
+    github.com/jsha/listenbuddy \
+    bitbucket.org/liamstask/goose/cmd/goose \
+    github.com/golang/lint/golint
 
-ENV BOULDER_CONFIG /go/src/github.com/letsencrypt/boulder/test/boulder-config.json
-ENV GOPATH /go/src/github.com/letsencrypt/boulder/Godeps/_workspace:$GOPATH
+ENV GO15VENDOREXPERIMENT 1
+WORKDIR /go/src/github.com/letsencrypt/boulder
 
 RUN mkdir -p /go/src/github.com/letsencrypt \
  && git clone --depth 1 --branch master https://github.com/letsencrypt/boulder.git /go/src/github.com/letsencrypt/boulder
 
-WORKDIR /go/src/github.com/letsencrypt/boulder
-
 # Warmup
 RUN service mysql start \
- && service rabbitmq-server start \
- && service rsyslog start \
 
+ && sh -c 'echo "127.0.0.1 boulder boulder-mysql boulder-rabbitmq" >> /etc/hosts' \
  && test/create_db.sh \
- && GOBIN=/go/src/github.com/letsencrypt/boulder/bin go install  ./... \
 
- && service rsyslog stop \
- && service mysql stop \
- && service rabbitmq-server stop
+ && service mysql stop
 
-COPY bin/entrypoint.sh /usr/bin
+RUN GOBIN=/go/src/github.com/letsencrypt/boulder/bin go install  ./...
+
+ENV BOULDER_MYSQL_PORT=43306
+ENV BOULDER_AMQP_PORT=45672
+ENV BOULDER_PORT=4000
+ENV BOULDER_CALLBACK_PORT=8000
+
 COPY config/rate-limit-policies.yml /go/src/github.com/letsencrypt/boulder/test
+COPY bin/entrypoint.sh /usr/bin
 
 ENTRYPOINT [ "/usr/bin/entrypoint.sh" ]
 CMD [ "./start.py" ]
