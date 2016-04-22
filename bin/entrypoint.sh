@@ -23,8 +23,8 @@ export RABBITMQ_NODE_PORT=$BOULDER_AMQP_PORT
 export RABBITMQ_DIST_PORT=$(($RABBITMQ_NODE_PORT + 2000))
 export RABBITMQ_NODENAME=boulder
 
+/etc/init.d/rabbitmq-server start
 service mysql start
-RABBITMQ_NODE_PORT=$BOULDER_AMQP_PORT RABBITMQ_DIST_PORT=5673 RABBITMQ_NODENAME=boulder rabbitmq-server -detached
 service rsyslog start
 
 go run cmd/rabbitmq-setup/main.go -server amqp://boulder-rabbitmq:$BOULDER_AMQP_PORT
