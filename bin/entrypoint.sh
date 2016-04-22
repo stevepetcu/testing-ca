@@ -8,7 +8,6 @@ sed -i 's/:3306/:'$BOULDER_MYSQL_PORT'/g' test/boulder-config.json
 sed -i 's/:3306/:'$BOULDER_MYSQL_PORT'/g' test/secrets/*
 
 # replace rabbitmq ports
-echo "[{rabbit, [{tcp_listeners, [$BOULDER_AMQP_PORT]}]}]." > /etc/rabbitmq/rabbitmq.config
 sed -i 's/:567[23]/:'$BOULDER_AMQP_PORT'/g' test/boulder-config.json
 sed -i 's/:567[23]/:'$BOULDER_AMQP_PORT'/g' test/secrets/*
 sed -i '/listenbuddy/i\\n    return' test/startservers.py
@@ -20,8 +19,12 @@ sed -i 's/4000/'$BOULDER_PORT'/g' test/startservers.py
 # replace default callback port
 sed -i 's/5002/'$BOULDER_CALLBACK_PORT'/g' test/boulder-config.json
 
+export RABBITMQ_NODE_PORT=$BOULDER_AMQP_PORT
+export RABBITMQ_DIST_PORT=$(($RABBITMQ_NODE_PORT + 2000))
+export RABBITMQ_NODENAME=boulder
+
 service mysql start
-service rabbitmq-server start
+RABBITMQ_NODE_PORT=$BOULDER_AMQP_PORT RABBITMQ_DIST_PORT=5673 RABBITMQ_NODENAME=boulder rabbitmq-server -detached
 service rsyslog start
 
 go run cmd/rabbitmq-setup/main.go -server amqp://boulder-rabbitmq:$BOULDER_AMQP_PORT
