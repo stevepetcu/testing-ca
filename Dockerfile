@@ -25,7 +25,11 @@ ENV GO15VENDOREXPERIMENT 1
 WORKDIR /go/src/github.com/letsencrypt/boulder
 
 RUN mkdir -p /go/src/github.com/letsencrypt \
- && git clone --depth 1 --branch master https://github.com/letsencrypt/boulder.git /go/src/github.com/letsencrypt/boulder
+ && git clone https://github.com/letsencrypt/boulder.git /go/src/github.com/letsencrypt/boulder \
+ && cd /go/src/github.com/letsencrypt/boulder \
+ && git reset --hard e45cd826f7cc207a063df6b0130c52395d3e481b \
+ && rm -rf .git
+ # 5/16/2016
 
 # Warmup
 RUN service mysql start \
