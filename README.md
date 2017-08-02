@@ -1,7 +1,7 @@
 Acme Testing CA
 ===============
 
-Provide an Certificate Authority server for testing purpose.
+Provide a Certificate Authority server for testing purpose.
 
 Requirements
 ------------
@@ -34,9 +34,9 @@ agreement: http://boulder:4000/terms/v1
 Customization
 -------------
 
-Because boulder use a MySQL and a RabbitMQ server and because boulder have to
-run with option `--net host` you may have port conflict. You can customize
-those ports with environments variables:
+Because boulder uses a MySQL and RabbitMQ server and because boulder has to
+run with option `--net host` you may run into a port conflict. You can customize
+those ports with the following environment variables:
 
 ```
 BOULDER_MYSQL_PORT=43306    # MySQL server
