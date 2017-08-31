@@ -27,9 +27,8 @@ WORKDIR /go/src/github.com/letsencrypt/boulder
 RUN mkdir -p /go/src/github.com/letsencrypt \
  && git clone https://github.com/letsencrypt/boulder.git /go/src/github.com/letsencrypt/boulder \
  && cd /go/src/github.com/letsencrypt/boulder \
- && git reset --hard e45cd826f7cc207a063df6b0130c52395d3e481b \
+ && git reset --hard b6851ddcfbd2ed4aba55456a0fa5fdd9574f71d2 \
  && rm -rf .git
- # 5/16/2016
 
 # Warmup
 RUN service mysql start \
