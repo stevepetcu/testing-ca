@@ -44,6 +44,7 @@ ENV BOULDER_MYSQL_PORT=43306
 ENV BOULDER_AMQP_PORT=45672
 ENV BOULDER_PORT=4000
 ENV BOULDER_CALLBACK_PORT=5002
+ENV BOULDER_IP=127.0.0.1
 
 COPY config/rate-limit-policies.yml /go/src/github.com/letsencrypt/boulder/test
 COPY bin/entrypoint.sh /usr/bin

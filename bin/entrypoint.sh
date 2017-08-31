@@ -19,6 +19,9 @@ sed -i 's/4000/'$BOULDER_PORT'/g' test/startservers.py
 # replace default callback port
 sed -i 's/5002/'$BOULDER_CALLBACK_PORT'/g' test/boulder-config.json
 
+# replace default boulder ip
+sed -i 's/127.0.0.1/'$BOULDER_IP'/g' test/boulder-config.json
+
 export RABBITMQ_NODE_PORT=$BOULDER_AMQP_PORT
 export RABBITMQ_DIST_PORT=$(($RABBITMQ_NODE_PORT + 2000))
 export RABBITMQ_NODENAME=boulder
