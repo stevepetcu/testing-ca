@@ -43,4 +43,5 @@ BOULDER_MYSQL_PORT=43306    # MySQL server
 BOULDER_AMQP_PORT=45672     # RabbitMq server
 BOULDER_PORT=4000           # Boulder front
 BOULDER_CALLBACK_PORT=5002  # Application's challenge
+BOULDER_IP=127.0.0.1        # Ip of Boulder server
 ```
